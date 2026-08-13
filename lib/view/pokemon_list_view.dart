@@ -65,8 +65,12 @@ class _PokemonListViewState extends State<PokemonListView> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              saveStorage(index);
-              Get.to(DetailTabbarView());
+              final selectedPokemon = pokemonList[index];
+              saveStorage(selectedPokemon);
+              Get.to(DetailTabbarView(
+                selectedPokemon: selectedPokemon,
+                pokemonList: pokemonList,
+              ));
             },
             child: SizedBox(
               height: 120,
@@ -94,9 +98,9 @@ class _PokemonListViewState extends State<PokemonListView> {
   }
 
   // Functions
-  void saveStorage(int index) {
-    box.write("_number", pokemonList[index].number);
-    box.write("_name", pokemonList[index].name);
-    box.write("_image", pokemonList[index].image);
+  void saveStorage(Pokemon selectedPokemon) {
+    box.write("_number", selectedPokemon.number);
+    box.write("_name", selectedPokemon.name);
+    box.write("_image", selectedPokemon.image);
   }
 }

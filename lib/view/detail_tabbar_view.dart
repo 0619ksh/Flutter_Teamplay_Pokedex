@@ -1,11 +1,19 @@
 // 포켓몬 상세 정보 TabBar
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pokedex_app/model/pokemon.dart';
 import 'package:pokedex_app/view/detail_view.dart';
 import 'package:pokedex_app/view/image_view.dart';
 
 class DetailTabbarView extends StatefulWidget {
-  const DetailTabbarView({super.key});
+  final Pokemon selectedPokemon;
+  final List<Pokemon> pokemonList;
+
+  const DetailTabbarView({
+    super.key,
+    required this.selectedPokemon,
+    required this.pokemonList
+  });
 
   @override
   State<DetailTabbarView> createState() => _DetailTabbarViewState();
@@ -14,7 +22,7 @@ class DetailTabbarView extends StatefulWidget {
 class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerProviderStateMixin {
   // Properties
   late TabController tabController;
-  late String pokemonName;
+  late Pokemon selectedPokemon;
 
   final box = GetStorage();
 
@@ -23,18 +31,34 @@ class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerPr
     super.initState();
 
     tabController = TabController(length: 2, vsync: this);
-    loadStorage();
+    selectedPokemon = widget.selectedPokemon;
   }
 
-  void loadStorage() {
-    pokemonName = box.read("_name") ?? '';
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(pokemonName),
+        title: DropdownButton(
+          value: selectedPokemon,
+          icon: Icon(Icons.keyboard_arrow_down),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18
+          ),
+          items: widget.pokemonList.map((pokemon) {
+            return DropdownMenuItem(
+              value: pokemon,
+              child: Text(pokemon.name)
+            );
+          },).toList(),
+          onChanged: onPokemonChanged
+        ),
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         bottom: TabBar(
@@ -55,10 +79,24 @@ class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerPr
       body: TabBarView(
         controller: tabController,
         children: [
-          ImageView(),
-          DetailView()
+          ImageView(pokemon: selectedPokemon),
+          DetailView(pokemon: selectedPokemon)
         ]
       ),
     );
+  }
+
+  // Function
+  void onPokemonChanged(Pokemon? pokemon) {
+    if(pokemon == null) {
+      return;
+    }
+
+    selectedPokemon = pokemon;
+    setState(() {});
+
+    box.write("_number", pokemon.number);
+    box.write("_name", pokemon.name);
+    box.write("_image", pokemon.image);
   }
 }

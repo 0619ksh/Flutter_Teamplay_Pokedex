@@ -1,9 +1,12 @@
 // 포켓몬 정보
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pokedex_app/model/pokemon.dart';
 
 class DetailView extends StatefulWidget {
-  const DetailView({super.key});
+  final Pokemon pokemon;
+
+  const DetailView({super.key, required this.pokemon});
 
   @override
   State<DetailView> createState() => _DetailViewState();
@@ -34,8 +37,8 @@ class _DetailViewState extends State<DetailView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("선택 포켓몬 : $pokemonName"),
-            Text("도감번호 : $pokemonNumber"),
+            Text("선택 포켓몬 : ${widget.pokemon.name}"),
+            Text("도감번호 : ${widget.pokemon.number}"),
           ],
         ),
       ),
