@@ -49,7 +49,7 @@ class _LoginViewState extends State<LoginView> {
 
       // ★ Snackbar 왼쪽 포켓볼 이미지
       icon: Image.asset(
-        'images/backround.png',
+        'images/background.png',
         width: 40,
         height: 40,
       ),
@@ -76,7 +76,7 @@ class _LoginViewState extends State<LoginView> {
 
       // ★ Snackbar 왼쪽 포켓볼 이미지
       icon: Image.asset(
-        'images/backround.png',
+        'images/background.png',
         width: 40,
         height: 40,
       ),
@@ -126,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
             },
 
             child: Image.asset(
-              'images/backround.png',
+              'images/background.png',
               width: 70,
               height: 70,
             ),
@@ -197,26 +197,12 @@ class _LoginViewState extends State<LoginView> {
             children: [
               // ★ 로그인 화면 포켓볼 이미지
               Image.asset(
-                'images/backround.png',
-                width: 150,
-                height: 150,
+                'images/background.png',
+                width: 250,
+                height: 250,
               ),
 
               const SizedBox(height: 30),
-
-
-              // ★ LOGIN 제목
-              Text(
-                'LOGIN',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
 
               // ★ ID 입력
               TextField(

@@ -53,7 +53,7 @@ class _SignupViewState extends State<SignupView> {
 
       // ★ 포켓볼 이미지
       icon: Image.asset(
-        'images/backround.png',
+        'images/background.png',
         width: 40,
         height: 40,
       ),
@@ -78,7 +78,7 @@ class _SignupViewState extends State<SignupView> {
       '비밀번호가 일치하지 않습니다.',
 
       icon: Image.asset(
-        'images/backround.png',
+        'images/background.png',
         width: 40,
         height: 40,
       ),
@@ -99,7 +99,7 @@ class _SignupViewState extends State<SignupView> {
       '이미 사용 중인 ID입니다.',
 
       icon: Image.asset(
-        'images/backround.png',
+        'images/background.png',
         width: 40,
         height: 40,
       ),
@@ -149,7 +149,7 @@ class _SignupViewState extends State<SignupView> {
             },
 
             child: Image.asset(
-              'images/backround.png',
+              'images/background.png',
               width: 70,
               height: 70,
             ),
@@ -252,7 +252,7 @@ class _SignupViewState extends State<SignupView> {
             children: [
               // ★ 회원가입 화면 포켓볼 이미지
               Image.asset(
-                'images/backround.png',
+                'images/background.png',
                 width: 120,
                 height: 120,
               ),
