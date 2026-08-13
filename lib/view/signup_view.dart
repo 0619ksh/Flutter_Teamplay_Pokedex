@@ -128,8 +128,11 @@ class _SignupViewState extends State<SignupView> {
   void showSignupSuccessDialog(String signupId) {
     Get.defaultDialog(
       title: 'Congratulations!',
+      
       titleStyle: TextStyle(
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Color(0xFF3B5BA7),
       ),
 
       content: Column(
@@ -139,7 +142,7 @@ class _SignupViewState extends State<SignupView> {
             '$signupId님\n회원가입이 완료되었습니다.',
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Color(0xFF3B5BA7),
+              color: Colors.black,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -253,6 +256,9 @@ class _SignupViewState extends State<SignupView> {
         foregroundColor: Colors.white,
         title: const Text(
           '회원가입',
+          style: TextStyle(
+            fontWeight: FontWeight.bold
+          ),
         ),
 
         centerTitle: true,
