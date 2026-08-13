@@ -62,43 +62,30 @@ class _PokemonListViewState extends State<PokemonListView> {
         toolbarHeight: 70,
       ),
 
-      // ★ ListView만 사용하지 않고 Column으로 변경
-      body: Column(
-        children: [
-
-          // ★ 포켓몬 목록이 남은 공간을 사용하도록 Expanded
-          Expanded(
-            child: ListView.builder(
-              itemCount: pokemonList.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    saveStorage(index);
-                    Get.to(const DetailTabbarView());
-                  },
-
-                  child: SizedBox(
-                    height: 120,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                pokemonList[index].image,
-                              ),
-
-                              Text(
-                                "     ${pokemonList[index].name}",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
-                          ),
+      body: ListView.builder(
+        itemCount: pokemonList.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              final selectedPokemon = pokemonList[index];
+              saveStorage(selectedPokemon);
+              Get.to(DetailTabbarView(
+                selectedPokemon: selectedPokemon,
+                pokemonList: pokemonList,
+              ));
+            },
+            child: SizedBox(
+              height: 120,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Image.asset(pokemonList[index].image),
+                      Text(
+                        "     ${pokemonList[index].name}",
+                        style: TextStyle(
+                          fontSize: 15
                         ),
                       ),
                     ),
@@ -126,9 +113,9 @@ class _PokemonListViewState extends State<PokemonListView> {
   }
 
   // Functions
-  void saveStorage(int index) {
-    box.write("_number", pokemonList[index].number);
-    box.write("_name", pokemonList[index].name);
-    box.write("_image", pokemonList[index].image);
+  void saveStorage(Pokemon selectedPokemon) {
+    box.write("_number", selectedPokemon.number);
+    box.write("_name", selectedPokemon.name);
+    box.write("_image", selectedPokemon.image);
   }
 }

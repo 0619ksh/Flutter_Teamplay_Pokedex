@@ -1,84 +1,102 @@
-// 포켓몬 상세 정보 TabBar 
-import 'package:flutter/material.dart'; 
-import 'package:get_storage/get_storage.dart'; 
-import 'package:pokedex_app/view/detail_view.dart'; 
-import 'package:pokedex_app/view/image_view.dart'; 
- 
-class DetailTabbarView extends StatefulWidget { 
-  const DetailTabbarView({super.key}); 
- 
-  @override 
-  State<DetailTabbarView> createState() => _DetailTabbarViewState(); 
-} 
- 
-class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerProviderStateMixin { 
-  // Properties 
-  late TabController tabController; 
-  late String pokemonName; 
- 
-  final box = GetStorage(); 
- 
-  @override 
-  void initState() { 
-    super.initState(); 
- 
-    tabController = TabController(length: 2, vsync: this); 
-    loadStorage(); 
-  } 
- 
-  void loadStorage() { 
-    pokemonName = box.read("_name") ?? ''; 
-  } 
- 
-  @override 
-  Widget build(BuildContext context) { 
-    return Scaffold( 
-      appBar: AppBar( 
-        title: Text(pokemonName, 
-        style: TextStyle( 
-          fontSize: 20, 
-          fontWeight: FontWeight.bold, 
-        ),), 
-        centerTitle: true, 
-        backgroundColor: Color(0xFFE53935),  
-        foregroundColor: Colors.white, 
-        bottom: TabBar( 
-          controller: tabController, 
-          labelColor: Colors.white, 
-          indicatorColor: Colors.black, 
-          tabs: [ 
-            Tab( 
-              icon: Icon(Icons.crop_original), 
-            ), 
-            Tab( 
-              icon: Icon(Icons.info_outline), 
-            ) 
-          ] 
-        ), 
-      ), 
- 
-      body: Column(
-        children: [
-          Expanded(
-            child: TabBarView( 
-              controller: tabController, 
-              children: [ 
-                ImageView(), 
-                DetailView() 
-              ] 
+// 포켓몬 상세 정보 TabBar
+import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:pokedex_app/model/pokemon.dart';
+import 'package:pokedex_app/view/detail_view.dart';
+import 'package:pokedex_app/view/image_view.dart';
+
+class DetailTabbarView extends StatefulWidget {
+  final Pokemon selectedPokemon;
+  final List<Pokemon> pokemonList;
+
+  const DetailTabbarView({
+    super.key,
+    required this.selectedPokemon,
+    required this.pokemonList
+  });
+
+  @override
+  State<DetailTabbarView> createState() => _DetailTabbarViewState();
+}
+
+class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerProviderStateMixin {
+  // Properties
+  late TabController tabController;
+  late Pokemon selectedPokemon;
+
+  final box = GetStorage();
+
+  @override
+  void initState() {
+    super.initState();
+
+    tabController = TabController(length: 2, vsync: this);
+    selectedPokemon = widget.selectedPokemon;
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: DropdownButton(
+          value: selectedPokemon,
+          icon: Icon(Icons.keyboard_arrow_down),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18
+          ),
+          items: widget.pokemonList.map((pokemon) {
+            return DropdownMenuItem(
+              value: pokemon,
+              child: Text(pokemon.name)
+            );
+          },).toList(),
+          onChanged: onPokemonChanged
+        ),
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        bottom: TabBar(
+          controller: tabController,
+          labelColor: Colors.white,
+          indicatorColor: Colors.black,
+          tabs: [
+            Tab(
+              icon: Icon(Icons.crop_original),
             ),
-          ),
-          Image.asset(
-            'images/logo.png',
-            width: 100,
-            height: 50,
-            fit: BoxFit.contain,
-          ),
-          SizedBox(
-            height: 30,
-          ),
-        ],
-      ), 
-    ); 
-  } 
+            Tab(
+              icon: Icon(Icons.info_outline),
+            )
+          ]
+        ),
+      ),
+
+      body: TabBarView(
+        controller: tabController,
+        children: [
+          ImageView(pokemon: selectedPokemon),
+          DetailView(pokemon: selectedPokemon)
+        ]
+      ),
+    );
+  }
+
+  // Function
+  void onPokemonChanged(Pokemon? pokemon) {
+    if(pokemon == null) {
+      return;
+    }
+
+    selectedPokemon = pokemon;
+    setState(() {});
+
+    box.write("_number", pokemon.number);
+    box.write("_name", pokemon.name);
+    box.write("_image", pokemon.image);
+  }
 }

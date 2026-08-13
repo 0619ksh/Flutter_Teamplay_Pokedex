@@ -1,9 +1,12 @@
 // 포켓몬 이미지
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pokedex_app/model/pokemon.dart';
 
 class ImageView extends StatefulWidget {
-  const ImageView({super.key});
+  final Pokemon pokemon;
+
+  const ImageView({super.key, required this.pokemon});
 
   @override
   State<ImageView> createState() => _ImageViewState();
@@ -30,7 +33,7 @@ class _ImageViewState extends State<ImageView> {
     return Scaffold(
       body: Center(
         child: Image.asset(
-          pokemonImage,
+          widget.pokemon.image,
           height: 200,
           width: 200,
           ),
