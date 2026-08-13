@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -11,8 +12,11 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   // ---------------- Property ----------------
 
-  late TextEditingController idController; // ★ ID 입력값 관리
-  late TextEditingController passwordController; // ★ Password 입력값 관리
+  late TextEditingController idController;
+  late TextEditingController passwordController;
+
+  // ★ GetStorage 사용
+  final box = GetStorage();
 
   // ---------------- initState ----------------
 
@@ -20,7 +24,6 @@ class _LoginViewState extends State<LoginView> {
   void initState() {
     super.initState();
 
-    // ★ TextField Controller 초기화
     idController = TextEditingController();
     passwordController = TextEditingController();
   }
@@ -29,7 +32,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void dispose() {
-    // ★ Controller 정리
     idController.dispose();
     passwordController.dispose();
 
@@ -38,68 +40,63 @@ class _LoginViewState extends State<LoginView> {
 
   // ---------------- Functions ----------------
 
-  // ★ ID 또는 Password를 입력하지 않았을 때 Snackbar
+
+  // ★ ID 또는 Password를 입력하지 않았을 때
   void showEmptySnackbar() {
     Get.snackbar(
       '경고',
       'ID와 비밀번호를 입력하세요',
 
-      // ★ 왼쪽에 포켓볼 이미지
+      // ★ Snackbar 왼쪽 포켓볼 이미지
       icon: Image.asset(
         'images/backround.png',
         width: 40,
         height: 40,
       ),
 
-      // ★ 위에서 Snackbar가 내려오도록 설정
+      // ★ 화면 위쪽에서 Snackbar 출력
       snackPosition: SnackPosition.TOP,
 
       // ★ 빨간색 배경
       backgroundColor: Colors.red,
 
-      // ★ 글자색
+      // ★ 흰색 글씨
       colorText: Colors.white,
 
-      // ★ Snackbar가 보이는 시간
       duration: const Duration(seconds: 2),
     );
   }
 
-  // ★ ID / Password가 회원정보와 일치하지 않을 때 Snackbar
+
+  // ★ 입력한 ID / Password가 저장된 정보와 다를 때
   void showLoginFailSnackbar() {
     Get.snackbar(
       '경고',
       'ID와 비밀번호가 일치하지 않습니다.',
 
-      // ★ 왼쪽에 포켓볼 이미지
+      // ★ Snackbar 왼쪽 포켓볼 이미지
       icon: Image.asset(
         'images/backround.png',
         width: 40,
         height: 40,
       ),
 
-      // ★ 위에서 Snackbar가 내려오도록 설정
       snackPosition: SnackPosition.TOP,
-
-      // ★ 빨간색 배경
       backgroundColor: Colors.red,
-
-      // ★ 글자색
       colorText: Colors.white,
-
-      // ★ Snackbar가 보이는 시간
       duration: const Duration(seconds: 2),
     );
   }
 
-  // ★ 로그인 성공 Dialog
+
+  // ★ 로그인 성공했을 때 Dialog
   void showLoginSuccessDialog(String loginId) {
     Get.defaultDialog(
       title: '로그인 완료',
 
       content: Column(
         children: [
-          // ★ 로그인한 ID를 Dialog에 출력
+          // ★ 실제 로그인한 ID 출력
           Text(
             '환영합니다 $loginId님!',
             style: const TextStyle(
@@ -110,18 +107,18 @@ class _LoginViewState extends State<LoginView> {
 
           const SizedBox(height: 20),
 
-          // ★ OK 버튼 대신 포켓볼 이미지를 클릭
+          // ★ OK 버튼 대신 포켓볼 이미지
           GestureDetector(
             onTap: () {
-              // ★ 기존 입력값 삭제
+              // ★ 기존 로그인 입력값 삭제
               idController.clear();
               passwordController.clear();
 
               // ★ Dialog 닫기
               Get.back();
 
-              // ★ RegionView로 이동하면서
-              // 로그인한 ID도 같이 전달
+              // ★ RegionView로 이동
+              // ★ 로그인한 ID도 함께 전달
               Get.offNamed(
                 '/region',
                 arguments: loginId,
@@ -139,6 +136,50 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
+
+  // ★ 로그인 확인
+  void login() {
+    // ★ TextField에서 사용자가 입력한 값 가져오기
+    String loginId = idController.text.trim();
+    String loginPassword = passwordController.text.trim();
+
+
+    // ① ★ ID 또는 Password가 비어있는지 확인
+    if (loginId.isEmpty || loginPassword.isEmpty) {
+      showEmptySnackbar();
+      return;
+    }
+
+
+    // ② ★ GetStorage에서 회원가입한 ID 불러오기
+    String? savedId = box.read<String>('id');
+
+    // ★ GetStorage에서 회원가입한 Password 불러오기
+    String? savedPassword = box.read<String>('password');
+
+
+    // ③ ★ 저장된 회원정보가 없을 경우
+    if (savedId == null || savedPassword == null) {
+      showLoginFailSnackbar();
+      return;
+    }
+
+
+    // ④ ★ 입력한 ID / Password와 저장된 정보 비교
+    if (loginId == savedId &&
+        loginPassword == savedPassword) {
+
+      // ★ 둘 다 일치 → 로그인 성공
+      showLoginSuccessDialog(loginId);
+
+    } else {
+
+      // ★ 하나라도 다름 → 로그인 실패
+      showLoginFailSnackbar();
+    }
+  }
+
+
   // ---------------- Build ----------------
 
   @override
@@ -154,7 +195,7 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ★ 로그인 화면 이미지
+              // ★ 로그인 화면 포켓볼 이미지
               Image.asset(
                 'images/backround.png',
                 width: 150,
@@ -162,6 +203,7 @@ class _LoginViewState extends State<LoginView> {
               ),
 
               const SizedBox(height: 30),
+
 
               // ★ LOGIN 제목
               Text(
@@ -175,6 +217,7 @@ class _LoginViewState extends State<LoginView> {
 
               const SizedBox(height: 30),
 
+
               // ★ ID 입력
               TextField(
                 controller: idController,
@@ -186,11 +229,12 @@ class _LoginViewState extends State<LoginView> {
 
               const SizedBox(height: 15),
 
+
               // ★ Password 입력
               TextField(
                 controller: passwordController,
 
-                // ★ 입력한 비밀번호 가리기
+                // ★ 비밀번호 가리기
                 obscureText: true,
 
                 decoration: const InputDecoration(
@@ -201,47 +245,14 @@ class _LoginViewState extends State<LoginView> {
 
               const SizedBox(height: 25),
 
+
               // ★ LOGIN 버튼
               SizedBox(
                 width: double.infinity,
 
                 child: ElevatedButton(
-                  onPressed: () {
-                    // ★ 사용자가 입력한 ID
-                    String loginId = idController.text.trim();
-
-                    // ★ 사용자가 입력한 Password
-                    String loginPassword =
-                        passwordController.text.trim();
-
-                    // ① ★ ID / Password 중 하나라도 입력하지 않은 경우
-                    if (loginId.isEmpty ||
-                        loginPassword.isEmpty) {
-                      showEmptySnackbar();
-                      return;
-                    }
-
-                    // ② ★★★★★★★★★★★★★★★★★★★★★★★
-                    //
-                    // 다음 단계에서
-                    // GetStorage에 저장된 회원정보를 가져와서
-                    //
-                    // loginId
-                    // loginPassword
-                    //
-                    // 와 비교
-                    //
-                    // 일치하지 않으면:
-                    //
-                    // showLoginFailSnackbar();
-                    // return;
-                    //
-                    // ★★★★★★★★★★★★★★★★★★★★★★★
-
-
-                    // ③ ★ 현재는 로그인 성공 Dialog 테스트
-                    showLoginSuccessDialog(loginId);
-                  },
+                  // ★ 로그인 검사 함수 실행
+                  onPressed: login,
 
                   child: const Text('LOGIN'),
                 ),
@@ -249,14 +260,16 @@ class _LoginViewState extends State<LoginView> {
 
               const SizedBox(height: 10),
 
+
               // ★ 회원가입 페이지로 이동
               TextButton(
                 onPressed: () async {
+
                   // ★ SignupView로 이동
                   await Get.toNamed('/signup');
 
-                  // ★ 회원가입 페이지에서 돌아오면
-                  // 기존 로그인 입력값 삭제
+                  // ★ 다시 LoginView로 돌아오면
+                  // 이전 입력값 삭제
                   idController.clear();
                   passwordController.clear();
                 },
