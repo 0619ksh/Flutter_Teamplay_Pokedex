@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pokedex_app/view/region_view.dart'; 
+import 'package:pokedex_app/view/signup_view.dart'; 
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -44,24 +46,29 @@ class _LoginViewState extends State<LoginView> {
   // ★ ID 또는 Password를 입력하지 않았을 때
   void showEmptySnackbar() {
     Get.snackbar(
-      '경고',
-      'ID와 비밀번호를 입력하세요',
+      '  경고',
+      '  ID와 비밀번호를 입력하세요',
 
       // ★ Snackbar 왼쪽 포켓볼 이미지
-      icon: Image.asset(
-        'images/background.png',
-        width: 40,
-        height: 40,
+      icon: Padding(
+        padding: const EdgeInsets.only(
+          left: 15
+        ),
+        child: Image.asset(
+          'images/background.png',
+          width: 40,
+          height: 40,
+        ),
       ),
 
       // ★ 화면 위쪽에서 Snackbar 출력
       snackPosition: SnackPosition.TOP,
 
       // ★ 빨간색 배경
-      backgroundColor: Colors.red,
+      backgroundColor:  Color(0xFFFBC02D),
 
       // ★ 흰색 글씨
-      colorText: Colors.white,
+      colorText: Colors.black,
 
       duration: const Duration(seconds: 2),
     );
@@ -71,14 +78,19 @@ class _LoginViewState extends State<LoginView> {
   // ★ 입력한 ID / Password가 저장된 정보와 다를 때
   void showLoginFailSnackbar() {
     Get.snackbar(
-      '경고',
-      'ID와 비밀번호가 일치하지 않습니다.',
+      '  경고',
+      '  ID와 비밀번호가 일치하지 않습니다.',
 
       // ★ Snackbar 왼쪽 포켓볼 이미지
-      icon: Image.asset(
-        'images/background.png',
-        width: 40,
-        height: 40,
+      icon: Padding(
+        padding: const EdgeInsets.only(
+          left: 15
+        ),
+        child: Image.asset(
+          'images/background.png',
+          width: 40,
+          height: 40,
+        ),
       ),
 
       snackPosition: SnackPosition.TOP,
@@ -93,6 +105,11 @@ class _LoginViewState extends State<LoginView> {
   void showLoginSuccessDialog(String loginId) {
     Get.defaultDialog(
       title: '로그인 완료',
+      titleStyle: const TextStyle(
+      color: Color(0xFF3B5BA7),
+      fontWeight: FontWeight.bold,
+      fontSize: 16,
+  ),
 
       content: Column(
         children: [
@@ -119,16 +136,18 @@ class _LoginViewState extends State<LoginView> {
 
               // ★ RegionView로 이동
               // ★ 로그인한 ID도 함께 전달
-              Get.offNamed(
-                '/region',
+              Get.off(
+                const RegionView(),
                 arguments: loginId,
+                transition: Transition.circularReveal,
+                duration: Duration(seconds: 1),
               );
             },
 
             child: Image.asset(
               'images/background.png',
-              width: 70,
-              height: 70,
+              width: 45,
+              height: 45,
             ),
           ),
         ],
@@ -195,11 +214,14 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(
+                height: 120,
+              ),
               // ★ 로그인 화면 포켓볼 이미지
               Image.asset(
                 'images/background.png',
-                width: 250,
-                height: 250,
+                width: 270,
+                height: 270,
               ),
 
               const SizedBox(height: 30),
@@ -229,16 +251,24 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 45),
 
 
               // ★ LOGIN 버튼
               SizedBox(
-                width: double.infinity,
+                width: 160,
+                height: 45,
 
                 child: ElevatedButton(
                   // ★ 로그인 검사 함수 실행
                   onPressed: login,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(20),
+                      )
+                  ),
 
                   child: const Text('LOGIN'),
                 ),
@@ -252,7 +282,13 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: () async {
 
                   // ★ SignupView로 이동
-                  await Get.toNamed('/signup');
+                  await Get.to(
+                    const SignupView(),
+                    transition: Transition.rightToLeft,
+                    duration: const Duration(
+                      seconds: 1,
+                    )
+                  );
 
                   // ★ 다시 LoginView로 돌아오면
                   // 이전 입력값 삭제
@@ -264,6 +300,14 @@ class _LoginViewState extends State<LoginView> {
                   'Go to Register',
                 ),
               ),
+              SizedBox(
+                height: 90,
+              ),
+              Image.asset(
+                'images/logo.png',
+                height: 40,
+                width: 80,
+              )
             ],
           ),
         ),

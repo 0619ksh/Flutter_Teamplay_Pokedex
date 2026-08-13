@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pokedex_app/model/user.dart';
+import 'package:pokedex_app/view/login_view.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -48,23 +49,28 @@ class _SignupViewState extends State<SignupView> {
   // ★ ID / Password 중 입력하지 않은 값이 있을 때
   void showEmptySnackbar() {
     Get.snackbar(
-      '경고',
-      'ID와 비밀번호를 모두 입력하세요.',
+      '  경고',
+      '  ID와 비밀번호를 모두 입력하세요.',
 
       // ★ 포켓볼 이미지
-      icon: Image.asset(
-        'images/background.png',
-        width: 40,
-        height: 40,
+      icon: Padding(
+        padding: const EdgeInsets.only(
+          left: 15
+        ),
+        child: Image.asset(
+          'images/background.png',
+          width: 40,
+          height: 40,
+        ),
       ),
 
       // ★ 위쪽에서 Snackbar 출력
       snackPosition: SnackPosition.TOP,
 
       // ★ 빨간색 Snackbar
-      backgroundColor: Colors.red,
+      backgroundColor:  Color(0xFFFBC02D),
 
-      colorText: Colors.white,
+      colorText: Colors.black,
 
       duration: const Duration(seconds: 2),
     );
@@ -74,17 +80,22 @@ class _SignupViewState extends State<SignupView> {
   // ★ Password와 Password Check가 다를 때
   void showPasswordFailSnackbar() {
     Get.snackbar(
-      '경고',
-      '비밀번호가 일치하지 않습니다.',
+      '  경고',
+      '  비밀번호가 일치하지 않습니다.',
 
-      icon: Image.asset(
-        'images/background.png',
-        width: 40,
-        height: 40,
+      icon: Padding(
+        padding: const EdgeInsets.only(
+          left: 15,
+        ),
+        child: Image.asset(
+          'images/background.png',
+          width: 40,
+          height: 40,
+        ),
       ),
 
       snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.red,
+      backgroundColor: Color(0xFFE53935),
       colorText: Colors.white,
 
       duration: const Duration(seconds: 2),
@@ -116,7 +127,10 @@ class _SignupViewState extends State<SignupView> {
   // ★ 회원가입 성공 Dialog
   void showSignupSuccessDialog(String signupId) {
     Get.defaultDialog(
-      title: '회원가입 완료',
+      title: 'Congratulations!',
+      titleStyle: TextStyle(
+        fontSize: 16
+      ),
 
       content: Column(
         children: [
@@ -125,6 +139,7 @@ class _SignupViewState extends State<SignupView> {
             '$signupId님\n회원가입이 완료되었습니다.',
             textAlign: TextAlign.center,
             style: const TextStyle(
+              color: Color(0xFF3B5BA7),
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -143,15 +158,17 @@ class _SignupViewState extends State<SignupView> {
               // ★ 회원가입 성공 Dialog 닫기
               Get.back();
 
-              // ★ SignupView를 닫고
-              // 이전 LoginView로 돌아가기
-              Get.back();
+              Get.off(
+                const LoginView(),
+                transition: Transition.leftToRight,
+                duration: const Duration(seconds: 1),
+              );
             },
 
             child: Image.asset(
               'images/background.png',
-              width: 70,
-              height: 70,
+              width: 50,
+              height: 50,
             ),
           ),
         ],
@@ -233,6 +250,7 @@ class _SignupViewState extends State<SignupView> {
 
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: const Text(
           '회원가입',
         ),
@@ -250,6 +268,9 @@ class _SignupViewState extends State<SignupView> {
             mainAxisAlignment: MainAxisAlignment.center,
 
             children: [
+              SizedBox(
+                height: 100,
+              ),
               // ★ 회원가입 화면 포켓볼 이미지
               Image.asset(
                 'images/background.png',
@@ -307,17 +328,33 @@ class _SignupViewState extends State<SignupView> {
 
               // ★ 회원가입 버튼
               SizedBox(
-                width: double.infinity,
+                width: 160,
+                height: 45,
 
                 child: ElevatedButton(
                   // ★ 버튼 클릭 → registerUser 함수 실행
                   onPressed: registerUser,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(20),
+                      )
+                  ),
 
                   child: const Text(
                     'REGISTER',
                   ),
                 ),
               ),
+               SizedBox(
+                height: 190,
+              ),
+              Image.asset(
+                'images/logo.png',
+                height: 40,
+                width: 80,
+              )
             ],
           ),
         ),
