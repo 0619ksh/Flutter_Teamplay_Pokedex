@@ -34,7 +34,7 @@ class _PokemonListViewState extends State<PokemonListView> {
       (item) => Pokemon(
         number: item["number"] ?? 0,
         name: item["name"] ?? '',
-        image: item["image"] ?? '',
+        image: item["image"] ?? ''
       ),
     ).toList();
   }
@@ -44,20 +44,18 @@ class _PokemonListViewState extends State<PokemonListView> {
     box.erase();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "$regionName지방",
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+          style: TextStyle(
+            fontSize: 30
           ),
         ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFFE53935),
+        backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         toolbarHeight: 70,
       ),
@@ -87,27 +85,14 @@ class _PokemonListViewState extends State<PokemonListView> {
                         style: TextStyle(
                           fontSize: 15
                         ),
-                      ),
-                    ),
+                      )
+                    ],
                   ),
-                );
-              },
+                ),
+              ),
             ),
-          ),
-
-          // ★ 화면 맨 아래 포켓몬 로고
-          Image.asset(
-            'images/logo.png',
-            width: 100,
-            height: 50,
-            fit: BoxFit.contain,
-          ),
-
-          // ★ 로고와 화면 맨 아래 사이 간격
-          const SizedBox(
-            height: 30,
-          ),
-        ],
+          );
+        },
       ),
     );
   }
