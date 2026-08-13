@@ -1,3 +1,4 @@
+// 포켓몬 모델
 class Pokemon {
   // Properties
   int number;     // 도감 번호

@@ -1,3 +1,4 @@
+// 사용자 정보 모델
 class User {
   // Properties
   String id;

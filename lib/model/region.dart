@@ -1,3 +1,4 @@
+// 지역 모델
 import 'package:pokedex_app/model/pokemon.dart';
 
 class Region {
