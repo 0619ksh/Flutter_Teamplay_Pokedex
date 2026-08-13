@@ -15,12 +15,17 @@ class RegionView extends StatefulWidget {
 
 class _RegionViewState extends State<RegionView> {
   late List<Region> regionList;
+  late String loginId;
 
   final box = GetStorage();
-  
+
   @override
   void initState() {
     super.initState();
+
+    // LoginView에서 arguments로 넘긴 ID 받기
+    loginId = Get.arguments;
+
     regionList = [];
     addData();
     initStorage();
@@ -36,6 +41,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 144, name: "프리져", image: "images/gen1_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "성도", image: "images/gen2.png",
       pokemonList: [
@@ -45,6 +51,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 244, name: "앤테이", image: "images/gen2_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "호연", image: "images/gen3.png",
       pokemonList: [
@@ -54,6 +61,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 384, name: "레쿠쟈", image: "images/gen3_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "신오", image: "images/gen4.png",
       pokemonList: [
@@ -63,6 +71,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 484, name: "펄기아", image: "images/gen4_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "하나", image: "images/gen5.png",
       pokemonList: [
@@ -72,6 +81,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 643, name: "레시라무", image: "images/gen5_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "칼로스", image: "images/gen6.png",
       pokemonList: [
@@ -81,6 +91,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 717, name: "이벨타르", image: "images/gen6_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "알로라", image: "images/gen7.png",
       pokemonList: [
@@ -90,6 +101,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 791, name: "솔가레오", image: "images/gen7_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "가라르", image: "images/gen8.png",
       pokemonList: [
@@ -99,6 +111,7 @@ class _RegionViewState extends State<RegionView> {
         Pokemon(number: 980, name: "무한다이노", image: "images/gen8_4.png")
       ]
     ));
+
     regionList.add(Region(
       name: "팔데아", image: "images/gen9.png",
       pokemonList: [
@@ -127,41 +140,68 @@ class _RegionViewState extends State<RegionView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.red[600],
-        title: Text('Pickachu님의 전국도감',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+        backgroundColor: Color(0xFFE53935),
+        foregroundColor: Colors.white,
+        toolbarHeight: 70,
+        title: Text(
+          '$loginId님의 전국도감',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('images/background.png'),
+
+        // ★ GridView와 로고를 위아래로 배치하기 위해 Column 사용
+        child: Column(
+          children: [
+
+            // ★ GridView가 남은 공간을 사용하도록 Expanded 사용
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('images/background.png'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 4,
+                    mainAxisSpacing: 4,
+                    childAspectRatio: 0.9
+                  ),
+                  itemCount: regionList.length,
+                  itemBuilder: (context, index) {
+                    return _buildGridItem(index);
+                  },
+                ),
+              ),
+            ),
+
+            // ★ GridView 아래쪽에 포켓몬 로고 추가
+            Image.asset(
+              'images/logo.png',
+              width: 100,
+              height: 50,
               fit: BoxFit.contain,
             ),
-          ),
-        
-        
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 6,
-              mainAxisSpacing: 6,
-              childAspectRatio: 0.8
-            ), 
-            itemCount: regionList.length,
-            itemBuilder: (context, index) {
-              return _buildGridItem(index);
-            },
-          ),
+
+            // ★ 로고와 화면 아래쪽 사이 여백
+            SizedBox(
+              height: 20,
+            ),
+          ],
         ),
       )
     );
   }
+
   // ==================== [분리된 함수] ====================
 
   // 1. Card에 GestureDetector를 입히는 함수
@@ -174,32 +214,35 @@ class _RegionViewState extends State<RegionView> {
 
   // 2. Card 위젯을 만드는 함수
   Widget _buildCard(int index) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          Expanded(
-            child: Image.asset(
-              regionList[index].image,
-              fit: BoxFit.cover,
-              width: double.infinity,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Text(
-              regionList[index].name,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            Expanded(
+              child: Image.asset(
+                regionList[index].image,
+                fit: BoxFit.cover,
+                width: double.infinity,
               ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: Text(
+                regionList[index].name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -213,6 +256,7 @@ class _RegionViewState extends State<RegionView> {
   // Storage에 데이터 저장
   void saveStorage(int index) {
     box.write("_regionName", regionList[index].name);
+
     final pokemonMapList = regionList[index].pokemonList.map(
       (pokemon) {
         return {
@@ -222,6 +266,7 @@ class _RegionViewState extends State<RegionView> {
         };
       },
     ).toList();
+
     box.write("_pokemons", pokemonMapList);
   }
 }

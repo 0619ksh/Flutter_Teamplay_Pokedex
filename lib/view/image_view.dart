@@ -32,7 +32,11 @@ class _ImageViewState extends State<ImageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset(widget.pokemon.image),
+        child: Image.asset(
+          widget.pokemon.image,
+          height: 200,
+          width: 200,
+          ),
       ),
     );
   }
