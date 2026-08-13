@@ -16,18 +16,51 @@ class _LoginViewState extends State<LoginView> {
 
   late TextEditingController idController;
   late TextEditingController passwordController;
+  late bool showStartImage;
+  late double startImageOpacity;
 
   // ★ GetStorage 사용
   final box = GetStorage();
 
   // ---------------- initState ----------------
 
-  @override
+    @override
   void initState() {
     super.initState();
 
     idController = TextEditingController();
     passwordController = TextEditingController();
+
+    // ★ 처음에는 전체 이미지 화면 보여주기
+    showStartImage = true;
+
+    // ★ 처음에는 완전히 보이게
+    startImageOpacity = 1.0;
+
+    // ★ 3초 동안 이미지를 보여준 뒤
+    // Fade 시작
+    Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        if (mounted) {
+          setState(() {
+            startImageOpacity = 0.0;
+          });
+        }
+      },
+    );
+
+    // ★ Fade가 1초 동안 진행된 후 로그인 화면으로 변경
+    Future.delayed(
+      const Duration(seconds: 4),
+      () {
+        if (mounted) {
+          setState(() {
+            showStartImage = false;
+          });
+        }
+      },
+    );
   }
 
   // ---------------- dispose ----------------
@@ -206,6 +239,27 @@ class _LoginViewState extends State<LoginView> {
     // ★ main.dart의 ColorScheme 가져오기
     final colorScheme = Theme.of(context).colorScheme;
 
+    if (showStartImage) {
+  return Scaffold(
+    body: AnimatedOpacity(
+      // ★ 1.0 → 0.0으로 바뀌면서 서서히 투명해짐
+      opacity: startImageOpacity,
+
+      // ★ Fade 효과가 진행되는 시간
+      duration: const Duration(seconds: 1),
+
+      child: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+
+        child: Image.asset(
+          'images/first.png',
+          fit: BoxFit.cover,
+        ),
+      ),
+    ),
+  );
+}
     return Scaffold(
       body: Center(
         child: Padding(

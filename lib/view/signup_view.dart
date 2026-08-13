@@ -158,11 +158,7 @@ class _SignupViewState extends State<SignupView> {
               // ★ 회원가입 성공 Dialog 닫기
               Get.back();
 
-              Get.off(
-                const LoginView(),
-                transition: Transition.leftToRight,
-                duration: const Duration(seconds: 1),
-              );
+              Get.back();
             },
 
             child: Image.asset(
