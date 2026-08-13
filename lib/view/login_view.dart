@@ -4,6 +4,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:pokedex_app/view/region_view.dart'; 
 import 'package:pokedex_app/view/signup_view.dart'; 
 
+import 'package:flutter/material.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
