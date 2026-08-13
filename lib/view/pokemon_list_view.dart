@@ -34,7 +34,7 @@ class _PokemonListViewState extends State<PokemonListView> {
       (item) => Pokemon(
         number: item["number"] ?? 0,
         name: item["name"] ?? '',
-        image: item["image"] ?? ''
+        image: item["image"] ?? '',
       ),
     ).toList();
   }
@@ -44,51 +44,83 @@ class _PokemonListViewState extends State<PokemonListView> {
     box.erase();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "$regionName지방",
-          style: TextStyle(
-            fontSize: 30
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.red,
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
         toolbarHeight: 70,
       ),
 
-      body: ListView.builder(
-        itemCount: pokemonList.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              saveStorage(index);
-              Get.to(DetailTabbarView());
-            },
-            child: SizedBox(
-              height: 120,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Image.asset(pokemonList[index].image),
-                      Text(
-                        "     ${pokemonList[index].name}",
-                        style: TextStyle(
-                          fontSize: 15
+      // ★ ListView만 사용하지 않고 Column으로 변경
+      body: Column(
+        children: [
+
+          // ★ 포켓몬 목록이 남은 공간을 사용하도록 Expanded
+          Expanded(
+            child: ListView.builder(
+              itemCount: pokemonList.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    saveStorage(index);
+                    Get.to(const DetailTabbarView());
+                  },
+
+                  child: SizedBox(
+                    height: 120,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                pokemonList[index].image,
+                              ),
+
+                              Text(
+                                "     ${pokemonList[index].name}",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+
+          // ★ 화면 맨 아래 포켓몬 로고
+          Image.asset(
+            'images/logo.png',
+            width: 100,
+            height: 50,
+            fit: BoxFit.contain,
+          ),
+
+          // ★ 로고와 화면 맨 아래 사이 간격
+          const SizedBox(
+            height: 30,
+          ),
+        ],
       ),
     );
   }
