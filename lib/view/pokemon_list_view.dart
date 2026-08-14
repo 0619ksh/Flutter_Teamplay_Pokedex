@@ -49,13 +49,15 @@ class _PokemonListViewState extends State<PokemonListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           "$regionName지방",
           style: TextStyle(
-            fontSize: 30
+            fontSize: 20,
+            fontWeight: FontWeight.bold
           ),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         toolbarHeight: 70,
       ),
@@ -75,6 +77,7 @@ class _PokemonListViewState extends State<PokemonListView> {
             child: SizedBox(
               height: 120,
               child: Card(
+                elevation: 3,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(

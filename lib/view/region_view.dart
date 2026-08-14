@@ -140,7 +140,7 @@ class _RegionViewState extends State<RegionView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color(0xFFE53935),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         toolbarHeight: 70,
         title: Text(
@@ -215,7 +215,7 @@ class _RegionViewState extends State<RegionView> {
   // 2. Card 위젯을 만드는 함수
   Widget _buildCard(int index) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(10.0),
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
