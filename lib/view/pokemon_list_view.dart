@@ -19,6 +19,9 @@ class _PokemonListViewState extends State<PokemonListView> {
 
   final box = GetStorage();
 
+  // ★ 잡은 포켓몬 도감 번호 저장 리스트
+  List<int> caughtPokemonNumbers = [];
+
   @override
   void initState() {
     super.initState();
@@ -37,11 +40,30 @@ class _PokemonListViewState extends State<PokemonListView> {
         image: item["image"] ?? ''
       ),
     ).toList();
+
+    // ★ 저장되어 있던 포획 포켓몬 번호 목록 불러오기
+    List<dynamic> savedCaught = box.read("caughtPokemonNumbers") ?? [];
+    caughtPokemonNumbers = savedCaught.cast<int>();
+  }
+
+  // ★ 포켓볼 클릭 시 포획 상태 변경 함수
+  void toggleCatch(int pokemonNumber) {
+    setState(() {
+      if (caughtPokemonNumbers.contains(pokemonNumber)) {
+        caughtPokemonNumbers.remove(pokemonNumber);
+      } else {
+        caughtPokemonNumbers.add(pokemonNumber);
+      }
+    });
+
+    // ★ 변경된 포획 상태를 GetStorage에 즉시 업데이트
+    box.write("caughtPokemonNumbers", caughtPokemonNumbers);
   }
 
   @override
   void dispose() {
-    box.erase();
+    box.remove("_regionName");
+    box.remove("_pokemons");
     super.dispose();
   }
   
@@ -63,6 +85,10 @@ class _PokemonListViewState extends State<PokemonListView> {
       body: ListView.builder(
         itemCount: pokemonList.length,
         itemBuilder: (context, index) {
+          final pokemon = pokemonList[index];
+          // ★ 해당 포켓몬이 잡은 상태인지 확인
+          final bool isCaught = caughtPokemonNumbers.contains(pokemon.number);
+
           return GestureDetector(
             onTap: () {
               final selectedPokemon = pokemonList[index];
@@ -85,7 +111,23 @@ class _PokemonListViewState extends State<PokemonListView> {
                         style: TextStyle(
                           fontSize: 15
                         ),
-                      )
+                      ),
+                      const Spacer(), // ★ 오른쪽 끝으로 아이콘 배치
+                      
+                      // ★ 포획 등록/해제 포켓볼 버튼
+                      IconButton(
+                        icon: Image.asset(
+                          'images/background.png',
+                          width: 32,
+                          height: 32,
+                          color: isCaught ? null : Colors.grey.withOpacity(0.4),
+                          colorBlendMode: isCaught ? BlendMode.dst : BlendMode.modulate,
+                        ),
+                        onPressed: () {
+                          toggleCatch(pokemon.number);
+                        },
+                      ),
+                      const SizedBox(width: 8),
                     ],
                   ),
                 ),

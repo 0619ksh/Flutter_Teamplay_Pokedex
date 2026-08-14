@@ -19,16 +19,39 @@ class _RegionViewState extends State<RegionView> {
 
   final box = GetStorage();
 
+  // ★ 잡은 포켓몬 번호 목록
+  List<int> caughtPokemonNumbers = [];
+
   @override
   void initState() {
     super.initState();
 
     // LoginView에서 arguments로 넘긴 ID 받기
-    loginId = Get.arguments;
+    loginId = Get.arguments ?? '사용자';
 
     regionList = [];
     addData();
     initStorage();
+    loadCaughtData();
+  }
+
+  // ★ 저장된 포획 포켓몬 데이터 불러오기
+  void loadCaughtData() {
+    List<dynamic> savedCaught = box.read("caughtPokemonNumbers") ?? [];
+    setState(() {
+      caughtPokemonNumbers = savedCaught.cast<int>();
+    });
+  }
+
+  // ★ 각 지방별 수집률(0.0 ~ 1.0) 계산 함수
+  double getRegionProgress(Region region) {
+    if (region.pokemonList.isEmpty) return 0.0;
+
+    int caughtCount = region.pokemonList
+        .where((pokemon) => caughtPokemonNumbers.contains(pokemon.number))
+        .length;
+
+    return caughtCount / region.pokemonList.length;
   }
 
   void addData() {
@@ -130,7 +153,6 @@ class _RegionViewState extends State<RegionView> {
 
   @override
   void dispose() {
-    box.erase();
     super.dispose();
   }
 
@@ -140,12 +162,12 @@ class _RegionViewState extends State<RegionView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color(0xFFE53935),
+        backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
         toolbarHeight: 70,
         title: Text(
           '$loginId님의 전국도감',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -155,14 +177,12 @@ class _RegionViewState extends State<RegionView> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
 
-        // ★ GridView와 로고를 위아래로 배치하기 위해 Column 사용
         child: Column(
           children: [
 
-            // ★ GridView가 남은 공간을 사용하도록 Expanded 사용
             Expanded(
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('images/background.png'),
                     fit: BoxFit.contain,
@@ -170,11 +190,11 @@ class _RegionViewState extends State<RegionView> {
                 ),
 
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 4,
                     mainAxisSpacing: 4,
-                    childAspectRatio: 0.9
+                    childAspectRatio: 0.75, // ★ 진행률 바 공간 확보를 위해 비율 살짝 조정
                   ),
                   itemCount: regionList.length,
                   itemBuilder: (context, index) {
@@ -184,7 +204,6 @@ class _RegionViewState extends State<RegionView> {
               ),
             ),
 
-            // ★ GridView 아래쪽에 포켓몬 로고 추가
             Image.asset(
               'images/logo.png',
               width: 100,
@@ -192,8 +211,7 @@ class _RegionViewState extends State<RegionView> {
               fit: BoxFit.contain,
             ),
 
-            // ★ 로고와 화면 아래쪽 사이 여백
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
           ],
@@ -204,18 +222,20 @@ class _RegionViewState extends State<RegionView> {
 
   // ==================== [분리된 함수] ====================
 
-  // 1. Card에 GestureDetector를 입히는 함수
   Widget _buildGridItem(int index) {
     return GestureDetector(
-      onTap: () => _onRegionTap(index), // GetX 이동 함수 호출
+      onTap: () => _onRegionTap(index),
       child: _buildCard(index),
     );
   }
 
-  // 2. Card 위젯을 만드는 함수
   Widget _buildCard(int index) {
+    final region = regionList[index];
+    final double progress = getRegionProgress(region);
+    final int percentage = (progress * 100).toInt();
+
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(8.0),
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -226,34 +246,58 @@ class _RegionViewState extends State<RegionView> {
           children: [
             Expanded(
               child: Image.asset(
-                regionList[index].image,
+                region.image,
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: Text(
-                regionList[index].name,
+                region.name,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
                 ),
               ),
             ),
+            
+            // ★ 수집률 진행률 바 & 백분율 텍스트
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: Column(
+                children: [
+                  LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Colors.grey[300],
+                    color: const Color(0xFFE53935),
+                    minHeight: 4,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "$percentage%",
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  // 3. GetX를 활용한 페이지 이동 함수 (context 필요 없음)
-  void _onRegionTap(int index) {
+  // ★ 페이지 이동 후 뒤로 가기로 돌아왔을 때 수집률 자동 갱신 (async / await 추가)
+  void _onRegionTap(int index) async {
     saveStorage(index);
-    Get.to(() => PokemonListView());
+    await Get.to(() => const PokemonListView());
+    loadCaughtData(); // 목록 화면에서 돌아오면 데이터 다시 불러오기
   }
 
-  // Storage에 데이터 저장
   void saveStorage(int index) {
     box.write("_regionName", regionList[index].name);
 
