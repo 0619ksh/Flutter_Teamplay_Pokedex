@@ -235,7 +235,7 @@ class _RegionViewState extends State<RegionView> {
     final int percentage = (progress * 100).toInt();
 
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(8.0),
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(

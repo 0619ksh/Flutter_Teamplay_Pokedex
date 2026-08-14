@@ -81,6 +81,7 @@ class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerPr
 
       body: TabBarView(
         controller: tabController,
+        physics: NeverScrollableScrollPhysics(),
         children: [
           ImageView(pokemon: selectedPokemon),
           DetailView(pokemon: selectedPokemon)

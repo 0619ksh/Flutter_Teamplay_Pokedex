@@ -84,60 +84,72 @@ class _PokemonListViewState extends State<PokemonListView> {
         toolbarHeight: 70,
       ),
 
-      body: ListView.builder(
-        itemCount: pokemonList.length,
-        itemBuilder: (context, index) {
-          final pokemon = pokemonList[index];
-          // ★ 해당 포켓몬이 잡은 상태인지 확인
-          final bool isCaught = caughtPokemonNumbers.contains(pokemon.number);
-
-          return GestureDetector(
-            onTap: () {
-              final selectedPokemon = pokemonList[index];
-              saveStorage(selectedPokemon);
-              Get.to(DetailTabbarView(
-                selectedPokemon: selectedPokemon,
-                pokemonList: pokemonList,
-              ));
-            },
-            child: SizedBox(
-              height: 120,
-              child: Card(
-                elevation: 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Image.asset(pokemonList[index].image),
-                      Text(
-                        "     ${pokemonList[index].name}",
-                        style: TextStyle(
-                          fontSize: 15
-                        ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: pokemonList.length,
+          itemBuilder: (context, index) {
+            final pokemon = pokemonList[index];
+            // ★ 해당 포켓몬이 잡은 상태인지 확인
+            final bool isCaught = caughtPokemonNumbers.contains(pokemon.number);
+        
+            return GestureDetector(
+              onTap: () {
+                final selectedPokemon = pokemonList[index];
+                saveStorage(selectedPokemon);
+                Get.to(DetailTabbarView(
+                  selectedPokemon: selectedPokemon,
+                  pokemonList: pokemonList,
+                ));
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
+                child: SizedBox(
+                  height: 120,
+                  child: Card(
+                    elevation: 3,
+                    color: index % 2 == 0
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : Theme.of(context).colorScheme.tertiaryContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: Image.asset(pokemonList[index].image)
+                          ),
+                          Text(
+                            "     ${pokemonList[index].name}",
+                            style: TextStyle(
+                              fontSize: 15
+                            ),
+                          ),
+                          const Spacer(), // ★ 오른쪽 끝으로 아이콘 배치
+                          
+                          // ★ 포획 등록/해제 포켓볼 버튼
+                          IconButton(
+                            icon: Image.asset(
+                              'images/background.png',
+                              width: 32,
+                              height: 32,
+                              color: isCaught ? null : Colors.grey.withValues(alpha: 0.4),
+                              colorBlendMode: isCaught ? BlendMode.dst : BlendMode.modulate,
+                            ),
+                            onPressed: () {
+                              toggleCatch(pokemon.number);
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                        ],
                       ),
-                      const Spacer(), // ★ 오른쪽 끝으로 아이콘 배치
-                      
-                      // ★ 포획 등록/해제 포켓볼 버튼
-                      IconButton(
-                        icon: Image.asset(
-                          'images/background.png',
-                          width: 32,
-                          height: 32,
-                          color: isCaught ? null : Colors.grey.withOpacity(0.4),
-                          colorBlendMode: isCaught ? BlendMode.dst : BlendMode.modulate,
-                        ),
-                        onPressed: () {
-                          toggleCatch(pokemon.number);
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

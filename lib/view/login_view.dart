@@ -136,7 +136,7 @@ class _LoginViewState extends State<LoginView> {
 
               // ★ RegionView로 이동
               // ★ 로그인한 ID도 함께 전달
-              Get.off(
+              Get.to(
                 const RegionView(),
                 arguments: loginId,
                 transition: Transition.circularReveal,

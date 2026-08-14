@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
       title: 'Pokedex App',
 
       theme: ThemeData(
-        colorScheme: const ColorScheme.light(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(0xFFE53935),
           primary: Color(0xFFE53935),    // 🔴 포켓몬 레드
           secondary: Color(0xFF3B5BA7),  // 🔵 포켓몬 블루
           tertiary: Color(0xFFFBC02D),   // 🟡 피카츄 옐로우
