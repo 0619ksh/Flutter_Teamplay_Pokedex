@@ -44,13 +44,16 @@ class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerPr
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: DropdownButton(
           value: selectedPokemon,
           icon: Icon(Icons.keyboard_arrow_down),
           style: TextStyle(
-            color: Colors.black,
-            fontSize: 18
+            color: Colors.white,
+            fontSize: 19,
+            fontWeight: FontWeight.bold
           ),
+          dropdownColor: Colors.redAccent,
           items: widget.pokemonList.map((pokemon) {
             return DropdownMenuItem(
               value: pokemon,
@@ -59,7 +62,7 @@ class _DetailTabbarViewState extends State<DetailTabbarView> with SingleTickerPr
           },).toList(),
           onChanged: onPokemonChanged
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         bottom: TabBar(
           controller: tabController,

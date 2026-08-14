@@ -37,8 +37,21 @@ class _DetailViewState extends State<DetailView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("선택 포켓몬 : ${widget.pokemon.name}"),
-            Text("도감번호 : ${widget.pokemon.number}"),
+            Text(
+              "선택 포켓몬 : ${widget.pokemon.name}",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            SizedBox(height: 30),
+            Text(
+              "도감번호 : ${widget.pokemon.number.toString().padLeft(3, '0')}",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              )
+            ),
           ],
         ),
       ),
