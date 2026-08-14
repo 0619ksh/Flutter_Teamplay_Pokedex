@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pokedex_app/model/pokemon.dart';
 import 'package:pokedex_app/model/region.dart';
+import 'package:pokedex_app/view/collecting_list.dart';
 
 import 'pokemon_list_view.dart';
 
@@ -216,7 +217,22 @@ class _RegionViewState extends State<RegionView> {
             ),
           ],
         ),
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(
+            () => CollectingList(
+              regionList: regionList, 
+              caughtPokemonNumbers: caughtPokemonNumbers,
+            )
+          );
+        },
+        child: Image.asset(
+          'images/openball.png',
+          width: 45,
+          height: 45,
+        ),
+      ),
     );
   }
 
